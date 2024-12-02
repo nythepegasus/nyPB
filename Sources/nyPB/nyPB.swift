@@ -65,17 +65,14 @@ public class NYPB {
     public var collections: URL { url.appending(component: "api").appending(component: "collections") }
     public var users: URL { collections.appending(component: "users") }
 
-    public func authUserPass(user: PBUser) async -> Result<Data, Error> {
+    public func authUserPass(user: PBUser) async -> Result<PBUserAuthResponse, Error> {
         let url = users.appending(component: "auth-with-password")
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = user.passAuth.json
-        do {
-            return .success((try await URLSession.shared.data(for: request).0))
-        } catch {
-            return .failure(error)
-        }
+        do { return .success(try PBUserAuthResponse(data: (try await URLSession.shared.data(for: request).0)))
+        } catch { return .failure(error) }
     }
 
     public func newUser(user: PBUser) async -> Result<Data, Error> {

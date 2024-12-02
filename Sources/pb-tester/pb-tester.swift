@@ -12,7 +12,7 @@ struct PBTester {
     static func main() async {
         let d = await pb.authUserPass(user: ny)
         switch d {
-            case .success(let data): print(String(data: data, encoding: .utf8) ?? "??")
+            case .success(let data): print(data)
             case .failure(let error): print("\(error): \(error.localizedDescription)")
         }
     }
