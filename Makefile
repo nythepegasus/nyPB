@@ -39,10 +39,14 @@ $(STATIC_RELEASE):
 static-debug: $(STATIC_DEBUG)
 static-release: $(STATIC_RELEASE)
 
-all: debug release static-debug static-release
+# Currently static builds with URLSession seem to be broken due to SSL issues
+# Error Domain=NSURLErrorDomain Code=-1 "(null)": SSL certificate problem: unable to get local issuer certificate
+# So for now they're removed from all
+
+all: debug release # static-debug static-release
 
 ZIPFILE := builds.zip
-$(ZIPFILE): $(DEBUG) $(RELEASE) $(STATIC_DEBUG) $(STATIC_RELEASE)
+$(ZIPFILE): all
 	mkdir -p builds/debug builds/release builds/static-debug builds/static-release
 	@cp $(DEBUG) builds/debug/
 	@cp $(RELEASE) builds/release/
@@ -55,7 +59,7 @@ $(ZIPFILE): $(DEBUG) $(RELEASE) $(STATIC_DEBUG) $(STATIC_RELEASE)
 zip: $(ZIPFILE)
 
 INSTALL_TARGET := ~/.swiftpm/bin/$(TARGET)
-$(INSTALL_TARGET): $(RELEASE) # You can change this to static if you'd like
+$(INSTALL_TARGET): $(RELEASE)
 
 install: $(INSTALL_TARGET)
 	@test ! -f $(INSTALL_TARGET) && \
