@@ -47,7 +47,7 @@ static-release: $(STATIC_RELEASE)
 
 all: debug release # static-debug static-release
 
-ZIPFILE := builds-$(shell git log -1 --format=%h).zip
+ZIPFILE := $(TARGET)-$(shell git log -1 --format=%h)-$(shell date -u +'%Y.%m.%d').zip
 $(ZIPFILE): all
 	mkdir -p builds/debug builds/release # builds/static-debug builds/static-release
 	@cp $(DEBUG) builds/debug/
