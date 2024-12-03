@@ -10,6 +10,15 @@ extension Encodable {
     var json: Data { try! JSONEncoder().encode(self) }
 }
 
+extension URL {
+    func appending(_ components: [String]) -> URL { components.reduce(self) { $0.appending($1, isDirectory: true) } }
+    func appending(_ component: String, isDirectory: Bool = true) -> URL {
+        if #available(macOS 13, iOS 16.0, tvOS 13.0, watchOS 8.0, *) {
+            appending(component: component, directoryHint: isDirectory ? .isDirectory : .notDirectory)
+        } else { appendingPathComponent(component, isDirectory: isDirectory) }
+    }
+}
+
 public struct PBUser: Codable {
     public let name: String
     public let username: String
@@ -67,12 +76,12 @@ public class NYPB {
         self.url = url
     }
 
-    public var collections: URL { url.appendingPathComponent("api").appendingPathComponent("collections") }
-    public var users: URL { collections.appendingPathComponent("users") }
+    public var collections: URL { url.appending(["api", "collections"]) }
+    public var users: URL { collections.appending("users") }
 
     public func authUserPass(user: PBUser) async -> Result<PBUserAuthResponse, Error> { await authUserPass(user: user.passAuth) }
     public func authUserPass(user: PBUser.PBUserPassAuth) async -> Result<PBUserAuthResponse, Error> {
-        let url = users.appendingPathComponent("auth-with-password")
+        let url = users.appending("auth-with-password")
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -82,7 +91,7 @@ public class NYPB {
     }
 
     public func newUser(user: PBUser) async -> Result<Data, Error> {
-        let url = users.appendingPathComponent("records")
+        let url = users.appending("records")
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
