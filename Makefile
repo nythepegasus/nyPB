@@ -47,13 +47,13 @@ static-release: $(STATIC_RELEASE)
 
 all: debug release # static-debug static-release
 
-ZIPFILE := builds.zip
+ZIPFILE := builds-$(shell git log -1 --format=%h).zip
 $(ZIPFILE): all
-	mkdir -p builds/debug builds/release builds/static-debug builds/static-release
+	mkdir -p builds/debug builds/release # builds/static-debug builds/static-release
 	@cp $(DEBUG) builds/debug/
 	@cp $(RELEASE) builds/release/
-	@cp $(STATIC_DEBUG) builds/static-debug/
-	@cp $(STATIC_RELEASE) builds/static-release/
+	#@cp $(STATIC_DEBUG) builds/static-debug/
+	#@cp $(STATIC_RELEASE) builds/static-release/
 	strip builds/**/$(TARGET)
 	zip -r $(ZIPFILE) builds/
 	rm -r builds/
@@ -75,6 +75,8 @@ uninstall: $(INSTALL_TARGET)
 	 rm $(INSTALL_TARGET) && \
 	 echo "rm $(INSTALL_TARGET)" || \
 	 echo "Nothing to be done!"
+
+reinstall: uninstall install
 
 CLEAN_TARGETS := $(DEBUG) $(RELEASE) $(STATIC_DEBUG) $(STATIC_RELEASE) $(ZIPFILE)
 clean:

@@ -86,7 +86,7 @@ public class NYPB {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = user.json
-        do { return .success(try PBUserAuthResponse(data: (try await URLSession.shared.data(for: request).0)))
+        do { return .success(try PBUserAuthResponse(data: try await URLSession.shared.data(for: request).0))
         } catch { return .failure(error) }
     }
 
