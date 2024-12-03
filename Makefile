@@ -20,11 +20,13 @@ STATIC_FLAGS := --swift-sdk x86_64-swift-linux-musl
 STATIC_DEBUG_FLAGS   := $(STATIC_FLAGS)
 STATIC_RELEASE_FLAGS := $(STATIC_FLAGS) $(RELEASE_FLAGS)
 
+SOURCES := Package.swift Sources/pb-tester/**.swift Sources/nyPB/**.swift
 
-$(DEBUG):
+
+$(DEBUG): $(SOURCES)
 	swift build $(DEBUG_FLAGS)
 
-$(RELEASE):
+$(RELEASE): $(SOURCES)
 	swift build $(RELEASE_FLAGS)
 
 debug:   $(DEBUG)
