@@ -1,17 +1,28 @@
 import Foundation
 
+import ArgumentParser
+import Yams
+
 import nyPB
 
 
 @main
-struct PBTester {
+struct PBTester: AsyncParsableCommand {
 
-    static let pb = NYPB(url: URL(string: "https://08710147.xyz")!)
-    static let ny = PBUser(name: "Buh", username: "buh", email: "buh@npeg.us", emailVisibility: false, password: "WhatAnAwfulPassword123484486996!", verified: false)
+    @Argument(help: "Instance URL")
+    var url: String
 
-    static func main() async {
-        let d = await pb.authUserPass(user: ny)
-        switch d {
+    @Argument(help: "Your username")
+    var username: String
+
+    @Argument(help: "Your password")
+    var password: String
+
+    mutating func run() async {
+        let pb = NYPB(url: URL(string: url)!)
+        let userAuth = PBUser.PBUserPassAuth(identity: username, password: password)
+        let authData = await pb.authUserPass(user: userAuth)
+        switch authData {
             case .success(let data): print(data)
             case .failure(let error): print("\(error): \(error.localizedDescription)")
         }

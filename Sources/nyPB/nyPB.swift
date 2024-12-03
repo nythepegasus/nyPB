@@ -40,6 +40,11 @@ public struct PBUser: Codable {
     public struct PBUserPassAuth: Codable {
         public let identity: String
         public let password: String
+
+        public init(identity: String, password: String) {
+            self.identity = identity
+            self.password = password
+        }
     }
 
     public init(name: String, username: String, email: String, emailVisibility: Bool, password: String, verified: Bool) {
@@ -65,12 +70,13 @@ public class NYPB {
     public var collections: URL { url.appending(component: "api").appending(component: "collections") }
     public var users: URL { collections.appending(component: "users") }
 
-    public func authUserPass(user: PBUser) async -> Result<PBUserAuthResponse, Error> {
+    public func authUserPass(user: PBUser) async -> Result<PBUserAuthResponse, Error> { await authUserPass(user: user.passAuth) }
+    public func authUserPass(user: PBUser.PBUserPassAuth) async -> Result<PBUserAuthResponse, Error> {
         let url = users.appending(component: "auth-with-password")
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = user.passAuth.json
+        request.httpBody = user.json
         do { return .success(try PBUserAuthResponse(data: (try await URLSession.shared.data(for: request).0)))
         } catch { return .failure(error) }
     }
