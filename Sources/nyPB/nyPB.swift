@@ -67,12 +67,12 @@ public class NYPB {
         self.url = url
     }
 
-    public var collections: URL { url.appending(component: "api").appending(component: "collections") }
-    public var users: URL { collections.appending(component: "users") }
+    public var collections: URL { url.appendingPathComponent("api").appendingPathComponent("collections") }
+    public var users: URL { collections.appendingPathComponent("users") }
 
     public func authUserPass(user: PBUser) async -> Result<PBUserAuthResponse, Error> { await authUserPass(user: user.passAuth) }
     public func authUserPass(user: PBUser.PBUserPassAuth) async -> Result<PBUserAuthResponse, Error> {
-        let url = users.appending(component: "auth-with-password")
+        let url = users.appendingPathComponent("auth-with-password")
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -82,7 +82,7 @@ public class NYPB {
     }
 
     public func newUser(user: PBUser) async -> Result<Data, Error> {
-        let url = users.appending(component: "records")
+        let url = users.appendingPathComponent("records")
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")

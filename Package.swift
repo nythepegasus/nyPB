@@ -4,6 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "nyPB",
+    platforms: [.macOS(.v13), .iOS(.v13), .tvOS(.v13), .watchOS(.v8), .visionOS(.v1)],
     products: [
         .executable(name: "pb-tester", targets: ["pb-tester"]),
         .library(name: "nyPB", targets: ["nyPB"]),
